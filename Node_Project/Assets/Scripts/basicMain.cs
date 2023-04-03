@@ -1,42 +1,43 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
+using UnityEngine.UI;           //유니티 UI 접근
+using UnityEngine.Networking;   //유니티 Networking 사용
 
 public class basicMain : MonoBehaviour
 {
-    public Button Hello;
-    public string host;
-    public int port;
+    public Button Hello;                //Hello 버튼 선언 
+    public string host;                 //주소 변수 선어 
+    public int port;                    //포트 번호 선언 (0 ~ 25000)
 
     void Start()
     {
         this.Hello.onClick.AddListener(() =>
         {
-            var url = string.Format("{0}:{1}/", host, port);
+            var url = string.Format("{0}:{1}/", host, port);            //string.format 함수로 URL 생성
             Debug.Log(url);
-            StartCoroutine(this.GetBasic(url, (raw) =>
+            StartCoroutine(this.GetBasic(url, (raw) =>                  //코루틴으로 GetBasic 호출후에 raw 파일을 콜백에 넣는다. 
             {
-                Debug.LogFormat("{0}", raw);
+                Debug.LogFormat("{0}", raw);                            //디버그 로그로 raw 파일 설정
             }));
         });
     }
 
     private IEnumerator GetBasic(string url, System.Action<string> callback)
     {
-        var webRequest = UnityWebRequest.Get(url);
-        yield return webRequest.SendWebRequest();
+        var webRequest = UnityWebRequest.Get(url);          //Get에 대한 웹 요청 URL 함수 
+        yield return webRequest.SendWebRequest();           //요청한 것이 돌아올때까지 대기 
 
-        Debug.Log("---->" + webRequest.downloadHandler.text);
+        Debug.Log("----->" + webRequest.downloadHandler.text);     //다운로드 핸들러 텍스트 로깅 
 
-        if (webRequest.result == UnityWebRequest.Result.ConnectionError || webRequest.result == UnityWebRequest.Result.ProtocolError)
+        if (webRequest.result == UnityWebRequest.Result.ConnectionError //접속 커넥션에 문제가 있을때 
+            || webRequest.result == UnityWebRequest.Result.ProtocolError)   //프로토콜에 문제가 있을때 
         {
-            Debug.Log("네트워크 환경이 좋지 않아 통신 불가능");
+            Debug.Log("네트워크 환경이 좋지 않아 통신 불가능 ");
         }
         else
         {
-            callback(webRequest.downloadHandler.text);
+            callback(webRequest.downloadHandler.text);          //통신이 성공하면 콜백 함수로 전달 
         }
     }
 }
