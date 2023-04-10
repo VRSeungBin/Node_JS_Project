@@ -10,7 +10,7 @@ public class SceneManager : MonoBehaviour
     {
         get
         {
-            if (instance == null)
+            if(instance == null)
             {
                 instance = FindObjectOfType<SceneManager>();
             }
@@ -25,12 +25,12 @@ public class SceneManager : MonoBehaviour
     {
         DontDestroyOnLoad(gameObject);          //씬이 변경되어도 유지하게 한다. 
 
-        if (FindObjectsOfType<SceneManager>().Length > 1)
+        if(FindObjectsOfType<SceneManager>().Length > 1)
         {
             Destroy(gameObject);
         }
 
-        if (currentSceneName == null)
+        if(currentSceneName == null)
         {
             currentSceneName = "Login";
         }
@@ -68,7 +68,7 @@ public class SceneManager : MonoBehaviour
     public void RegisterScene(string sceneName)
     {
         currentSceneName = sceneName;
-        if (!sceneDictionary.ContainsKey(sceneName)) //딕셔너리에 Key 값이 있는지 검사
+        if(!sceneDictionary.ContainsKey(sceneName)) //딕셔너리에 Key 값이 있는지 검사
         {
             BaseScene tempScene = GetSceneClass(sceneName);
             tempScene.sceneName = sceneName;
@@ -78,7 +78,7 @@ public class SceneManager : MonoBehaviour
 
     public BaseScene GetScene(string sceneName)
     {
-        if (sceneDictionary.ContainsKey(sceneName)) //딕셔너리에 Key 값이 있는지 검사
+        if(sceneDictionary.ContainsKey(sceneName)) //딕셔너리에 Key 값이 있는지 검사
         {
             return sceneDictionary[sceneName];      //딕셔너리 Key 배열처럼 가저온다.
         }

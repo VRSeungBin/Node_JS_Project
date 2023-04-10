@@ -11,7 +11,7 @@ public class LoginScene : BaseScene
     }
 
     protected override void Clear()
-    {
+    {        
         Debug.Log("LoginScene Clear");
     }
 

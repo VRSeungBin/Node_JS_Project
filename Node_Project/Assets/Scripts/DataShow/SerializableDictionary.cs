@@ -3,19 +3,20 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Linq;
 
-public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, ISerializationCallbackReceiver
+[System.Serializable]
+public class SerializableDictionary<TKey, TVaule> : Dictionary<TKey,TVaule>, ISerializationCallbackReceiver
 {
     public List<TKey> InspectorKeys;
-    public List<TValue> InspectorValues;
+    public List<TVaule> InspectorValues;
 
     public SerializableDictionary()
     {
         InspectorKeys = new List<TKey>();
-        InspectorValues = new List<TValue>();
-
+        InspectorValues = new List<TVaule>();
+        SyncInspectorFromDictionary();
     }
 
-    public new void Add(TKey key, TValue value)
+    public new void Add(TKey key , TVaule value)
     {
         base.Add(key, value);
         SyncInspectorFromDictionary();
@@ -28,39 +29,40 @@ public class SerializableDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IS
     }
 
     public void OnBeforeSerialize() { }
-    public void SyncInspectorFromDictionary()
+    public void SyncInspectorFromDictionary()               //딕셔너리에 있는것을 인스펙터 창과 싱크를 맞추는 함수
     {
         InspectorKeys.Clear();
         InspectorValues.Clear();
 
-        foreach(KeyValuePair<TKey, TValue> pair in this)
+        foreach(KeyValuePair<TKey, TVaule> pair in this)
         {
             InspectorKeys.Add(pair.Key);
             InspectorValues.Add(pair.Value);
         }
     }
-    public void SyncDictionaryFromInspector()
+
+    public void SyncDictionaryFromInspector()                   //인스펙터에 있는것을 딕셔너리와 싱크를 맞춤
     {
         foreach (var key in Keys.ToList())
         {
             base.Remove(key);
         }
 
-        for(int i = 0; i < InspectorKeys.Count; i++)
+        for(int i = 0;i < InspectorKeys.Count; i++)
         {
-            if (this.ContainsKey(InspectorKeys[i]))
+            if(this.ContainsKey(InspectorKeys[i]))
             {
                 Debug.LogError("중복 키가 있습니다. ");
                 break;
             }
 
-            base.Add(InspectorKeys[i], InspectorValues[i]);
-        }
+            base.Add(InspectorKeys[i], InspectorValues[i]); 
+        }        
     }
-
+    
     public void OnAfterDeserialize()
     {
-        if(InspectorKeys.Count == InspectorValues.Count)
+        if (InspectorKeys.Count == InspectorValues.Count)
         {
             SyncDictionaryFromInspector();
         }
